@@ -112,7 +112,7 @@ public class ApiController{
     private void signInApi(final String email, final String password){
         String url = BASE_URL + USER + "acceder";
 
-        StringRequest request = new StringRequest(Request.Method.POST,url,stringObjectListener,jsonErrorListener){
+        StringRequest request = new StringRequest(Request.Method.POST,url,stringObjectListener,stringErrorListener){
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String,String> hashMap = new HashMap<>();

@@ -13,9 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 import com.monsordi.gotravel.dialog.DialogGoTravel;
-import com.monsordi.gotravel.shop.DetailActivity;
-import com.monsordi.gotravel.shop.Travel;
-import com.monsordi.gotravel.shop.TravelAdapter;
+
 
 import java.util.ArrayList;
 
@@ -23,7 +21,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements DialogGoTravel.DialogGoTravelTasks,
-        AdapterView.OnItemClickListener,TravelAdapter.OnClickListener{
+        AdapterView.OnItemClickListener{
 
     private static final int REQUEST_CART_ADD = 0;
     private static final int REQUEST_CART_DELETE = 1;
@@ -31,10 +29,9 @@ public class MainActivity extends AppCompatActivity implements DialogGoTravel.Di
     @BindView(R.id.main_toolbar) Toolbar toolbar;
     @BindView(R.id.main_listview) ListView listView;
 
-    private ArrayList<Travel> travelList;
-    private ArrayList<Travel> cartList;
     private MyPreference preference;
     private String token;
+    private Long id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +49,9 @@ public class MainActivity extends AppCompatActivity implements DialogGoTravel.Di
             startActivity(new Intent(this,SignInActivity.class));
             finish();
         } else {
-            Toast.makeText(this, getString(R.string.welcome), Toast.LENGTH_SHORT).show();
             token = preference.getToken();
+            Toast.makeText(this, token, Toast.LENGTH_SHORT).show();
+            id = preference.getId();
             createList();
         }
     }
@@ -62,50 +60,21 @@ public class MainActivity extends AppCompatActivity implements DialogGoTravel.Di
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == REQUEST_CART_ADD && resultCode == RESULT_OK){
-            int position = data.getIntExtra(getString(R.string.position_key),-1);
-            int numberOfAddings = data.getIntExtra(getString(R.string.addings),-1);
-            for(int i=0;i<numberOfAddings;i++){
-            cartList.add(travelList.get(position));
-            }
-        } else if (requestCode == REQUEST_CART_DELETE && resultCode == RESULT_OK){
-            cartList = (ArrayList<Travel>) data.getSerializableExtra(getString(R.string.cart_list_key));
-        }
+
     }
 
 
     //****************************************************************************************************************
 
     private void createList(){
-        travelList = new ArrayList<>();
-        cartList = new ArrayList<>();
 
-        travelList.add(new Travel("Machu Picchu","Blah blah",549.99f,new int[]{R.drawable.peru_machu,R.drawable.peru_ge,R.drawable.peru_llama},"Perú"));
-        travelList.add(new Travel("Vienna Opera","Blah blah",789.99f,new int[]{R.drawable.austria_opera,R.drawable.vienna_schonbrunn,R.drawable.vienna_sacher},"Austria"));
-        travelList.add(new Travel("China Wall","Blah blah",659.99f,new int[]{R.drawable.china_wall,R.drawable.china_palace,R.drawable.china_beijing},"China"));
-        travelList.add(new Travel("Chichen Itza","Blah blah",599.99f,new int[]{R.drawable.mexico_chichen,R.drawable.mexico_hierve,R.drawable.mexico_coloradas},"México"));
-        travelList.add(new Travel("Petra","Blah blah",749.99f,new int[] {R.drawable.jord_petra,R.drawable.jord_2,R.drawable.jord_oasis},"Jordania"));
-        travelList.add(new Travel("Budapest Parliament","Blah blah",899.99f,new int[]{R.drawable.hungary_parliament,R.drawable.hungary_bastion,R.drawable.hungary_chain},"Hungary"));
-        travelList.add(new Travel("Colosseum","Blah blah",1299.99f,new int[]{R.drawable.italy_colosseum,R.drawable.italy_firenze,R.drawable.italy_cinque_terre},"Italy"));
-
-        TravelAdapter travelAdapter = new TravelAdapter(this,travelList,this);
-        listView.setOnItemClickListener(this);
-        listView.setAdapter(travelAdapter);
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Intent intent = new Intent(this, DetailActivity.class);
-        intent.putExtra(getString(R.string.travel_key),travelList.get(position));
-        intent.putExtra(getString(R.string.position_key),position);
-        startActivityForResult(intent, REQUEST_CART_ADD);
+
     }
 
-    @Override
-    public void OnClick(int position) {
-        Toast.makeText(this,getString(R.string.added_to_cart),Toast.LENGTH_SHORT).show();
-        cartList.add(travelList.get(position));
-    }
 
     //****************************************************************************************************************
 

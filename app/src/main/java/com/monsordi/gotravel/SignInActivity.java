@@ -104,20 +104,25 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onResponse(String response) {
         if (response != null) {
+            id = Long.parseLong(response.substring(0,response.indexOf("-")));
+            String token = response.substring(response.indexOf("-")+1);
             preference.setOld(true);
-            preference.setToken(response);
+            preference.setToken(token);
+            preference.setId(id);
             startActivity(new Intent(this, MainActivity.class));
             finish();
         }
 
     }
 
-
     @Override
     public void onErrorResponse(VolleyError error) {
         showProgressDialog(false);
         if(error instanceof ServerError)
             Toast.makeText(this, getString(R.string.error_auth), Toast.LENGTH_SHORT).show();
+        else
+            Toast.makeText(this, error.toString(), Toast.LENGTH_SHORT).show();
+
     }
 
     //Sets an error in the corresponding editText depending on the EmailCode
