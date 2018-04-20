@@ -24,7 +24,7 @@ import java.util.Map;
 
 public class ApiController{
 
-    public static final String BASE_URL="http://192.168.1.74:8080/";
+    public static final String BASE_URL="http://192.168.0.31:8080/";
     public static final String USER = "usuario/";
 
     private Context mContext;
