@@ -22,17 +22,18 @@ import java.util.Map;
  * Created by diego on 19/04/18.
  */
 
-public class ApiController{
+public class SignApi {
 
-    public static final String BASE_URL="http://192.168.0.31:8080/";
     public static final String USER = "usuario/";
+    public static final String ATTENDANT = "encargado/";
+    public static final String COUNSELOR = "asesor/";
 
     private Context mContext;
     private JsonListener jsonListener;
     private StringListener stringListener;
     private EmailPasswordTasks mEmailPasswordTasks;
 
-    public ApiController(Context mContext, JsonListener jsonListener, EmailPasswordTasks mEmailPasswordTasks) {
+    public SignApi(Context mContext, JsonListener jsonListener, EmailPasswordTasks mEmailPasswordTasks) {
         this.mContext = mContext;
         this.jsonListener = jsonListener;
         this.mEmailPasswordTasks = mEmailPasswordTasks;
@@ -64,7 +65,7 @@ public class ApiController{
 
     //****************************************************************************************************************
 
-    public ApiController(Context mContext, StringListener stringListener, EmailPasswordTasks mEmailPasswordTasks) {
+    public SignApi(Context mContext, StringListener stringListener, EmailPasswordTasks mEmailPasswordTasks) {
         this.mContext = mContext;
         this.stringListener = stringListener;
         this.mEmailPasswordTasks = mEmailPasswordTasks;
@@ -100,17 +101,17 @@ public class ApiController{
 
     //****************************************************************************************************************
 
-    public void signIn(String email,String password){
+    public void signIn(String email,String password,String type){
         if(!isValidForm(email,password,false))
             return;
 
         //Changes visibility in some aspects of the UI and attempts to create a new user.
         mEmailPasswordTasks.showProgressDialog(true);
-        signInApi(email,password);
+        signInApi(email,password,type);
     }
 
-    private void signInApi(final String email, final String password){
-        String url = BASE_URL + USER + "acceder";
+    private void signInApi(final String email, final String password,String type){
+        String url = AppController.BASE_URL + type + "acceder";
 
         StringRequest request = new StringRequest(Request.Method.POST,url,stringObjectListener,stringErrorListener){
             @Override
@@ -126,16 +127,16 @@ public class ApiController{
 
     //****************************************************************************************************************
 
-    public void signUp(String name,String email, String password) {
+    public void signUp(String name,String email, String password,String type) {
         if(!isValidForm(email,password,true))
             return;
 
         mEmailPasswordTasks.showProgressDialog(true);
-        signUpApi(name,email,password);
+        signUpApi(name,email,password,type);
     }
 
-    private void signUpApi(String name, String email,String password){
-        String url = BASE_URL + USER + "crear?nombre=" + name + "&correo=" + email + "&password=" + password ;
+    private void signUpApi(String name, String email,String password,String type){
+        String url = AppController.BASE_URL + type + "crear?nombre=" + name + "&correo=" + email + "&password=" + password ;
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET,url,null,jsonObjectListener,jsonErrorListener);
         AppController.getInstance().addToRequestQueue(request);
     }

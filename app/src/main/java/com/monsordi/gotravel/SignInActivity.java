@@ -13,19 +13,13 @@ import android.widget.Toast;
 
 import com.android.volley.ServerError;
 import com.android.volley.VolleyError;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.monsordi.gotravel.api.ApiController;
-import com.monsordi.gotravel.dto.Usuario;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.monsordi.gotravel.api.SignApi;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class SignInActivity extends AppCompatActivity implements View.OnClickListener,
-        ApiController.EmailPasswordTasks, ApiController.StringListener {
+        SignApi.EmailPasswordTasks, SignApi.StringListener {
 
     @BindView(R.id.login_emailEditText)
     EditText emailEditText;
@@ -64,8 +58,8 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         switch (v.getId()) {
             //A sign in attempt occurs
             case R.id.login_signInButton:
-                ApiController apiController = new ApiController(this, this, this);
-                apiController.signIn(emailEditText.getText().toString().trim(), passwordEditText.getText().toString().trim());
+                SignApi signApi = new SignApi(this, this, this);
+                signApi.signIn(emailEditText.getText().toString().trim(), passwordEditText.getText().toString().trim(),SignApi.USER);
                 break;
 
             //The user is taken to another activity in order to create a new account

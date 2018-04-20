@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -19,18 +18,17 @@ import android.widget.Toast;
 import com.android.volley.ServerError;
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
-import com.monsordi.gotravel.api.ApiController;
+import com.monsordi.gotravel.api.SignApi;
 import com.monsordi.gotravel.dialog.DialogGoTravel;
 import com.monsordi.gotravel.dto.Usuario;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class SignUpActivity extends AppCompatActivity implements View.OnClickListener,
-        ApiController.EmailPasswordTasks, ApiController.StringListener,
+        SignApi.EmailPasswordTasks, SignApi.StringListener,
         DialogGoTravel.DialogGoTravelTasks{
 
     @BindView(R.id.signUp_nameEditText) EditText nameEditText;
@@ -116,22 +114,22 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     //Proceeds with signing up process if both passwords match.
     public void proceedWithSignUp(String email,String password,String confirmPassword){
         if(password.equals(confirmPassword)){
-            ApiController signUpController = new ApiController(this,jsonListener,this);
-            signUpController.signUp(name,email,password);
+            SignApi signUpController = new SignApi(this,jsonListener,this);
+            signUpController.signUp(name,email,password,SignApi.USER);
         } else
             Toast.makeText(this,getString(R.string.passwords_dont_match),Toast.LENGTH_SHORT).show();
     }
 
     //****************************************************************************************************************
 
-    ApiController.JsonListener jsonListener = new ApiController.JsonListener() {
+    SignApi.JsonListener jsonListener = new SignApi.JsonListener() {
         @Override
         public void onResponse(JSONObject response){
             Gson gson = new Gson();
             Usuario usuario = gson.fromJson(response.toString(),Usuario.class);
             id = usuario.getId();
-            ApiController signInController = new ApiController(SignUpActivity.this,SignUpActivity.this,SignUpActivity.this);
-            signInController.signIn(usuario.getEmail(),usuario.getPassword());
+            SignApi signInController = new SignApi(SignUpActivity.this,SignUpActivity.this,SignUpActivity.this);
+            signInController.signIn(usuario.getEmail(),usuario.getPassword(),SignApi.USER);
         }
 
         @Override
@@ -149,9 +147,11 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onResponse(String response) {
         if(response!=null){
+            id = Long.parseLong(response.substring(0,response.indexOf("-")));
+            String token = response.substring(response.indexOf("-")+1);
             preference.setOld(true);
+            preference.setToken(token);
             preference.setId(id);
-            preference.setToken(response);
             startActivity(new Intent(this, MainActivity.class));
             finish();
         }
