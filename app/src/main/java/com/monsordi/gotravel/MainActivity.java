@@ -14,9 +14,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 import com.monsordi.gotravel.dialog.DialogGoTravel;
 
-
-import java.util.ArrayList;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
