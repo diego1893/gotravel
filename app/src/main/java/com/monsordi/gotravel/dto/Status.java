@@ -1,6 +1,8 @@
 package com.monsordi.gotravel.dto;
 
-public class Status {
+import java.io.Serializable;
+
+public class Status implements Serializable {
 
 	Long id;
 	

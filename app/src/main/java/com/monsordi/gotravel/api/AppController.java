@@ -12,7 +12,7 @@ import com.android.volley.toolbox.Volley;
 
 public class AppController extends Application {
 
-    public static final String BASE_URL="http://192.168.0.31:8080/";
+    public static final String BASE_URL="http://192.168.1.110:8080/";
 
     private static final String TAG = "AppController";
     private static AppController mInstance;

@@ -10,33 +10,26 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.android.volley.VolleyError;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.monsordi.gotravel.api.CelularApi;
-import com.monsordi.gotravel.api.ServiceApi;
+import com.monsordi.gotravel.adapter.OrderAdapter;
+import com.monsordi.gotravel.api.OrderApi;
+import com.monsordi.gotravel.api.SignApi;
+import com.monsordi.gotravel.api.UserApi;
 import com.monsordi.gotravel.dialog.DialogGoTravel;
-import com.monsordi.gotravel.dto.Celular;
-import com.monsordi.gotravel.dto.PrestadorServicio;
-
-import org.json.JSONArray;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
+import com.monsordi.gotravel.dto.Orden;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements DialogGoTravel.DialogGoTravelTasks, View.OnClickListener, ServiceApi.ServiceListeners {
+public class MainActivity extends AppCompatActivity implements DialogGoTravel.DialogGoTravelTasks, View.OnClickListener
+    ,UserApi.UserOrdersListeners{
 
-    private static final int REQUEST_CART_ADD = 0;
-    private static final int REQUEST_CART_DELETE = 1;
+    private static final int REQUEST_NEW_ORDER = 100;
 
     @BindView(R.id.main_toolbar)
     Toolbar toolbar;
@@ -46,10 +39,15 @@ public class MainActivity extends AppCompatActivity implements DialogGoTravel.Di
     TextView textView;
     @BindView(R.id.main_new_order_button)
     FloatingActionButton newOrderButton;
+    @BindView(R.id.main_progressBar)
+    ProgressBar progressBar;
 
+    private OrderApi orderApi;
+    private OrderAdapter orderAdapter;
     private MyPreference preference;
     private String token;
     private Long id;
+    private int step;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements DialogGoTravel.Di
             newOrderButton.setOnClickListener(this);
             token = preference.getToken();
             id = preference.getId();
-            createList();
+            getOrderList(SignApi.USER);
         }
     }
 
@@ -82,29 +80,33 @@ public class MainActivity extends AppCompatActivity implements DialogGoTravel.Di
 
     }
 
-
-
-
     //****************************************************************************************************************
 
-    private void createList() {
+    private void getOrderList(String type) {
+        switch (type){
+            case SignApi.ATTENDANT:
+                break;
+            case SignApi.COUNSELOR:
+                break;
 
+            case SignApi.USER:
+                Toast.makeText(this, "Entro a switch", Toast.LENGTH_SHORT).show();
+                UserApi userApi = new UserApi(this);
+                userApi.getOrdersById(id,token);
+                break;
+
+        }
     }
 
     @Override
     public void onClick(View v) {
-        ServiceApi celularApi = new ServiceApi(this);
-        celularApi.getServiceList();
-    }
-
-    @Override
-    public void onErrorResponse(VolleyError error) {
-        Toast.makeText(this, error.toString(), Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onResponse(List<PrestadorServicio> celularList) {
-        Toast.makeText(this, celularList.get(0).getName(), Toast.LENGTH_SHORT).show();
+        switch (v.getId()){
+            case R.id.main_new_order_button:
+                step = 0;
+                orderApi = new OrderApi(orderListeners);
+                orderApi.createOrder();
+                break;
+        }
     }
 
     //****************************************************************************************************************
@@ -150,4 +152,49 @@ public class MainActivity extends AppCompatActivity implements DialogGoTravel.Di
         startActivity(new Intent(this, SignInActivity.class));
         finish();
     }
+
+    //****************************************************************************************************************
+
+    //These methods are related to the orders retrieving
+    @Override
+    public void onErrorResponse(VolleyError error) {
+        progressBar.setVisibility(View.GONE);
+        listView.setVisibility(View.VISIBLE);
+        textView.setVisibility(View.VISIBLE);
+        Toast.makeText(this, error.toString(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onResponse(List<Orden> orderList) {
+        progressBar.setVisibility(View.GONE);
+        listView.setVisibility(View.VISIBLE);
+        textView.setVisibility(View.VISIBLE);
+        orderAdapter = new OrderAdapter(this,orderList);
+        listView.setAdapter(orderAdapter);
+    }
+
+    //****************************************************************************************************************
+
+    OrderApi.OrderListeners orderListeners = new OrderApi.OrderListeners() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            Toast.makeText(MainActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onResponse(Orden order) {
+            if(step==0){
+                step++;
+                orderApi.setUser(id,order.getId());
+            } else {
+                Intent intent = new Intent(MainActivity.this, NewOrderActivity.class);
+                intent.putExtra(getString(R.string.order_key), order);
+                startActivityForResult(intent, REQUEST_NEW_ORDER);
+            }
+        }
+    };
+
+    //****************************************************************************************************************
+
+
 }

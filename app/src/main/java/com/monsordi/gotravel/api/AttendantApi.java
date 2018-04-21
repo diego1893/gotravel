@@ -50,15 +50,16 @@ public class AttendantApi implements Response.Listener<JSONArray>, Response.Erro
         AppController.getInstance().addToRequestQueue(request);
     }
 
-    public void getOrdersById(Long idOrder){
-        String url = AppController.BASE_URL + ENCARGADO + idOrder + "/ordenes";
+    public void getOrdersById(Long idOrder,String token){
+        String url = AppController.BASE_URL + ENCARGADO + idOrder + "/ordenes?token=" + token;
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET,url,null,orderResponseListener,orderErrorListener);
+        AppController.getInstance().addToRequestQueue(request);
     }
 
     Response.Listener<JSONArray> orderResponseListener = new Response.Listener<JSONArray>() {
         @Override
         public void onResponse(JSONArray response) {
-            Type listType = new TypeToken<ArrayList<JSONArray>>(){}.getType();
+            Type listType = new TypeToken<ArrayList<Orden>>(){}.getType();
             List<Orden> ordersList = new Gson().fromJson(response.toString(),listType);
             attendantOrdersListeners.onResponse(ordersList);
         }

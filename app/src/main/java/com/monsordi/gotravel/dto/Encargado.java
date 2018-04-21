@@ -1,6 +1,8 @@
 package com.monsordi.gotravel.dto;
 
-public class Encargado {
+import java.io.Serializable;
+
+public class Encargado implements Serializable {
 
 	Long id;
 	

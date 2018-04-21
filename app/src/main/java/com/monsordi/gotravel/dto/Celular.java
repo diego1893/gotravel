@@ -1,6 +1,8 @@
 package com.monsordi.gotravel.dto;
 
-public class Celular {
+import java.io.Serializable;
+
+public class Celular implements Serializable {
 
 	Long id;
 	

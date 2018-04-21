@@ -1,8 +1,9 @@
 package com.monsordi.gotravel.dto;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Orden {
+public class Orden implements Serializable {
 
     Long id;
 

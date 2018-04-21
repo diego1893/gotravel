@@ -41,4 +41,6 @@
     <string name="token">Token key</string>
     <string name="error_auth">The password is not right or the user may not exist</string>
     <string name="no_order">Currently, there are no orders!</string>
+    <string name="order_key">Order key</string>
+    <string name="new_order">New Order</string>
 </resources>

@@ -1,6 +1,8 @@
 package com.monsordi.gotravel.dto;
 
-public class Almacen {
+import java.io.Serializable;
+
+public class Almacen implements Serializable {
 
 	Long id;
 	

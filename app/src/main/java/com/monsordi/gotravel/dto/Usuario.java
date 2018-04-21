@@ -3,7 +3,9 @@ package com.monsordi.gotravel.dto;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Usuario {
+import java.io.Serializable;
+
+public class Usuario implements Serializable {
 
 	Long id;
 	

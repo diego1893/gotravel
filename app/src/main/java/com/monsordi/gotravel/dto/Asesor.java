@@ -1,6 +1,8 @@
 package com.monsordi.gotravel.dto;
 
-public class Asesor {
+import java.io.Serializable;
+
+public class Asesor implements Serializable {
 
 	Long id;
 	

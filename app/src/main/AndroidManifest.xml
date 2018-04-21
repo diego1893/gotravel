@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.monsordi.gotravel">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name=".api.AppController"
@@ -36,23 +36,14 @@
             android:name=".SignInActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".shop.CartActivity"
-            android:label="@string/cart"
-            android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVIY"
-                android:value="com.monsordi.form.MainActivity" />
-        </activity>
-        <activity android:name=".shop.DetailActivity"
+        <activity android:name=".NewOrderActivity"
+            android:label="@string/new_order"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
             >
             <meta-data
-                android:name="android.support.PARENT_ACTIVIY"
-                android:value="com.monsordi.form.MainActivity" />
-
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
         </activity>
     </application>
 

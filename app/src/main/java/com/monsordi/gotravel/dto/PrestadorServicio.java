@@ -1,6 +1,8 @@
 package com.monsordi.gotravel.dto;
 
-public class PrestadorServicio {
+import java.io.Serializable;
+
+public class PrestadorServicio implements Serializable {
 
 	Long id;
 	

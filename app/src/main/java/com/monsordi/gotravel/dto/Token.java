@@ -3,9 +3,10 @@ package com.monsordi.gotravel.dto;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class Token {
+public class Token implements Serializable {
 
 	Long id;
 	
